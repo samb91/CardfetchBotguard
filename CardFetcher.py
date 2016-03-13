@@ -1,16 +1,29 @@
 import re
 from WikiaHandler import WikiaHandler
 
+WIKIA_BASE_URL = "http://cardfight.wikia.com"
 
 class CardFetcher:
     def __init__(self):
         self.url_pattern = re.compile("^cardfight\.wikia.com/wiki/[^/\s]*$")
+        self.a_pattern = re.compile("(<a[^>]*>[^<]*</a>)")
+        self.a_href_pattern = re.compile("(?<=<a href=\")[^\"]*")
+        self.a_body_pattern = re.compile("(?<=>)[^<]*(?=</a>)")
         self.wikia_handler = WikiaHandler()
 
     def get_card_by_url(self, url):
         if not url.startswith("http://"):
             url = "http://" + url
         return self.wikia_handler.get_card_info_by_url(url)
+
+    def a_to_reddit_link(self, text):
+        match = re.findall(self.a_pattern, text)
+        for m in match:
+            link = re.search(self.a_href_pattern, m).group(0)
+            body = re.search(self.a_body_pattern, m).group(0)
+            reddit_link = "[" + body + "](" + WIKIA_BASE_URL + link + ")"
+            text = text.replace(m, reddit_link)
+        return text
 
     def format_effect(self, effect):
         effect = effect.strip()
@@ -20,22 +33,24 @@ class CardFetcher:
         effect = effect.replace("</b>", "**")
         effect = effect.replace("<i>", "*")
         effect = effect.replace("</i>", "*")
+        effect = self.a_to_reddit_link(effect)
         return effect
 
     def format_card(self, card_info):
-        print(card_info)
         if card_info is not None:
             effect = self.format_effect(card_info['Effect'])
             name = "[" + card_info['Name'] + "](" + "img url" + ")"
             wikia = "[wikia](" + card_info['Url'] + ")"
+            # We just want "Grade x", not the skill (can be derived by reader from grade)
+            grade = card_info['Grade / Skill'][:7]
             card_text = (name + " " + wikia + "\n" +
-                        card_info['Grade / Skill'] + " / " + card_info['Unit Type'] + "\n" +
+                        grade + " / " + card_info['Unit Type'] + "\n" +
                         "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n" +
                          card_info['Clan'] + " / " + card_info['Race'] + "\n" +
                          "\n" + effect
                         )
             return card_text
-        return "hi"
+        return None
 
     def fetch_card(self, card_name: str):
         card_info = None
