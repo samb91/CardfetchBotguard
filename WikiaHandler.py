@@ -33,7 +33,8 @@ class WikiaHandler:
         html = requests.get(url)
         page = PyQuery(html.text)
         cftable = page('.cftable')
-        card_info = {'Url': url}
+        img = cftable('.image').attr['href']
+        card_info = {'Url': url, 'Img': img}
         # Card attributes
         info_table = cftable.find('.info-main')
         for tr in info_table('tr').items():

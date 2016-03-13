@@ -27,8 +27,8 @@ class CardFetcher:
 
     def format_effect(self, effect):
         effect = effect.strip()
-        effect = effect.replace("<br>", "\n")
-        effect = effect.replace("<br/>", "\n")
+        effect = effect.replace("<br>", "\n\n")
+        effect = effect.replace("<br/>", "\n\n")
         effect = effect.replace("<b>", "**")
         effect = effect.replace("</b>", "**")
         effect = effect.replace("<i>", "*")
@@ -39,15 +39,15 @@ class CardFetcher:
     def format_card(self, card_info):
         if card_info is not None:
             effect = self.format_effect(card_info['Effect'])
-            name = "[" + card_info['Name'] + "](" + "img url" + ")"
+            name = "[" + card_info['Name'] + "](" + card_info['Img'] + ")"
             wikia = "[wikia](" + card_info['Url'] + ")"
             # We just want "Grade x", not the skill (can be derived by reader from grade)
             grade = card_info['Grade / Skill'][:7]
-            card_text = (name + " " + wikia + "\n" +
-                        grade + " / " + card_info['Unit Type'] + "\n" +
-                        "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n" +
-                         card_info['Clan'] + " / " + card_info['Race'] + "\n" +
-                         "\n" + effect
+            card_text = (name + " " + wikia + "\n\n" +
+                        grade + " / " + card_info['Unit Type'] + "\n\n" +
+                        "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n\n" +
+                         card_info['Clan'] + " / " + card_info['Race'] + "\n\n" +
+                         "\n\n" + effect
                         )
             return card_text
         return None
