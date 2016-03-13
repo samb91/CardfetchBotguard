@@ -17,6 +17,7 @@ class CardFetcher:
         if not url.startswith("http://"):
             url = "http://" + url
 
+        self.wikia_handler.get_card_info(url)
         return url
 
     def correct_name(self, name):
