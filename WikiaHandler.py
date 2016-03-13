@@ -1,13 +1,16 @@
+import re
 import requests
 import difflib
 from pyquery import PyQuery
-from collections import defaultdict
 
 API_URL = "http://cardfight.wikia.com/api/v1"
 
 
 class WikiaHandler:
-    def get_url_from_name(self, name):
+    def __init__(self):
+        self.url_pattern = re.compile("^cardfight\.wikia.com/wiki/[^/\s]*$")
+
+    def get_card_info_by_name(self, name):
         results = None
         try:
             search_query = "/Search/List?query="
@@ -19,22 +22,22 @@ class WikiaHandler:
 
             for item in results.json()['items']:
                 if item['title'] == closest:
-                    return item['url']
+                    return self.get_card_info_by_url(item['url'])
 
             return None
         except:
             return None
 
-    def get_card_info(self, url):
+    def get_card_info_by_url(self, url):
         html = requests.get(url)
         page = PyQuery(html.text)
         cftable = page('.cftable')
         info_table = cftable.find('.info-main')
-        card_info = defaultdict(dict)
+        card_info = {'Url' : url}
         for tr in info_table('tr').items():
             info_list = [i.text() for i in tr('td').items()]
             if len(info_list) == 2:
                 card_info[info_list[0]] = info_list[1]
-                print(card_info)
+                #print(card_info)
 
         return card_info

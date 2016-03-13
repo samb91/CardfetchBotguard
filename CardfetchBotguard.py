@@ -22,8 +22,8 @@ class CardfetchBotguard(object):
                 op_text = submission.selftext
                 reply = self.comment_builder.build_comment(op_text)
                 if reply is not None:
-                    print('pretend comment ' + reply)
-                    #submission.add_comment(reply)
+                    print(reply)
+                    #        submission.add_comment(reply)
                 self.already_done.append(submission.id)
 
         time.sleep(10)
