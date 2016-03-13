@@ -25,6 +25,7 @@ class WikiaHandler:
                     return self.get_card_info_by_url(item['url'])
 
             return None
+
         except:
             return None
 
@@ -32,12 +33,18 @@ class WikiaHandler:
         html = requests.get(url)
         page = PyQuery(html.text)
         cftable = page('.cftable')
+        card_info = {'Url': url}
+        # Card attributes
         info_table = cftable.find('.info-main')
-        card_info = {'Url' : url}
         for tr in info_table('tr').items():
             info_list = [i.text() for i in tr('td').items()]
             if len(info_list) == 2:
                 card_info[info_list[0]] = info_list[1]
-                #print(card_info)
-
+        # Card effects
+        effect_table = cftable.find('.info-extra').find('.effect')
+        for tr in effect_table('tr').items():
+            # Want to keep the html for formatting
+            effect_list = [i.html() for i in tr('td').items()]
+            if len(effect_list) == 1:
+                card_info['Effect'] = effect_list[0]
         return card_info
