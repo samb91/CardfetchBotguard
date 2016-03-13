@@ -9,6 +9,7 @@ API_URL = "http://cardfight.wikia.com/api/v1"
 class WikiaHandler:
     def __init__(self):
         self.url_pattern = re.compile("^cardfight\.wikia.com/wiki/[^/\s]*$")
+        self.img_ext_pattern = re.compile(".*\.(png|jpg|jpeg|gif)")
 
     def get_card_info_by_name(self, name):
         results = None
@@ -34,6 +35,9 @@ class WikiaHandler:
         page = PyQuery(html.text)
         cftable = page('.cftable')
         img = cftable('.image').attr['href']
+        m = re.search(self.img_ext_pattern, img)
+        if m:
+            img = m.group(0)
         card_info = {'Url': url, 'Img': img}
         # Card attributes
         info_table = cftable.find('.info-main')
