@@ -1,9 +1,11 @@
 import re
+from WikiaHandler import WikiaHandler
 
 
 class CardFetcher:
     def __init__(self):
         self.url_pattern = re.compile("^cardfight\.wikia.com/wiki/[^/\s]*$")
+        self.wikia_handler = WikiaHandler()
 
     def upper_char(self, m):
         return m.group(1) + m.group(2).upper()
@@ -34,6 +36,7 @@ class CardFetcher:
 
     def get_url_by_name(self, name):
         url_name = self.correct_name(name)
+        print(self.wikia_handler.get_url_from_name(url_name))
         # Replace all spaces with underscores
         url_name = url_name.replace(" ", "_")
 
