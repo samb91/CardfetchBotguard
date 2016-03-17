@@ -14,14 +14,12 @@ class CommentBuilder:
         return [x for x in name_list if not (x in seen or seen_add(x))]
 
     def build_comment(self, parent_text):
-        reply = None
         found_bracket_patterns = self.bracket_pattern.findall(parent_text)
         found_url_patterns = self.url_pattern.findall(parent_text)
         found_patterns = self.remove_duplicates(found_url_patterns + found_bracket_patterns)
         if len(found_patterns) > 0:
-            reply = " "
+            reply = ""
             for card in found_patterns:
-                reply += self.card_fetcher.fetch_card(card)
-            #    print(card)
+                reply += self.card_fetcher.fetch_card(card) + "***\n\n"
             return reply
-
+        return None
