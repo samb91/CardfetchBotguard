@@ -3,6 +3,7 @@ from WikiaHandler import WikiaHandler
 
 WIKIA_BASE_URL = "http://cardfight.wikia.com"
 
+
 class CardFetcher:
     def __init__(self):
         self.url_pattern = re.compile("^cardfight\.wikia.com/wiki/[^/\s]*$")
@@ -38,17 +39,30 @@ class CardFetcher:
 
     def format_card(self, card_info):
         if card_info is not None:
-            effect = self.format_effect(card_info['Effect'])
+            print(card_info)
+
+            effect = None
+            if 'Effect' in card_info:
+                effect = self.format_effect(card_info['Effect'])
+
             name = "[" + card_info['Name'] + "](" + card_info['Img'] + ")"
             wikia = "[wikia](" + card_info['Url'] + ")"
+            unit_type = card_info['Unit Type']
+            if unit_type == "Trigger Unit":
+                unit_type = unit_type + " (" + card_info['Trigger effect'] + ")"
             # We just want "Grade x", not the skill (can be derived by reader from grade)
             grade = card_info['Grade / Skill'][:7]
+
             card_text = (name + " " + wikia + "\n\n" +
-                        grade + " / " + card_info['Unit Type'] + "\n\n" +
-                        "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n\n" +
-                         card_info['Clan'] + " / " + card_info['Race'] + "\n\n" +
-                         "\n\n" + effect
-                        )
+                         grade + " / " + unit_type + "\n\n" +
+                         "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n\n" +
+                         card_info['Clan'] + " / " + card_info['Race']
+                         )
+
+            if effect is not None:
+                card_text = card_text + "\n\n" + effect
+
+            card_text += "\n\n"
             return card_text
         return None
 
