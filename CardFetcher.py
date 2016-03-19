@@ -39,7 +39,7 @@ class CardFetcher:
 
     def format_card(self, card_info):
         if card_info is not None:
-            print(card_info)
+            #print(card_info)
 
             effect = None
             if 'Effect' in card_info:
@@ -67,10 +67,8 @@ class CardFetcher:
         return None
 
     def fetch_card(self, card_name: str):
-        card_info = None
         if re.match(self.url_pattern, card_name):
             # If we've got a URL, just use that
-            assert isinstance(card_name, str)
             card_info = self.get_card_by_url(card_name)
         else:
             # Else, we just use the name

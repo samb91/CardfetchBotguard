@@ -19,11 +19,12 @@ class CardfetchBotguard(object):
     def run(self):
         for submission in self.subreddit.get_new(limit=10):
             if submission.id not in self.already_done:
-                op_text = submission.selftext
-                reply = self.comment_builder.build_comment(op_text)
-                if reply is not None:
-                    print(reply)
-                    #        submission.add_comment(reply)
-                self.already_done.append(submission.id)
+                if submission.author.name is not "CardfetchBotguard":
+                    op_text = submission.url if "cardfight.wikia.com" in submission.url else submission.selftext
+                    reply = self.comment_builder.build_comment(op_text)
+                    if reply is not None:
+                        print(reply)
+                        submission.add_comment(reply)
+                    self.already_done.append(submission.id)
 
         time.sleep(10)
