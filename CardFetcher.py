@@ -26,6 +26,11 @@ class CardFetcher:
             text = text.replace(m, reddit_link)
         return text
 
+    def escape_url(self, url):
+        url = url.replace("(", "\(")
+        url = url.replace(")", "\)")
+        return url
+
     def format_effect(self, effect):
         effect = effect.strip()
         effect = effect.replace("<br>", "\n\n")
@@ -34,13 +39,13 @@ class CardFetcher:
         effect = effect.replace("</b>", "**")
         effect = effect.replace("<i>", "*")
         effect = effect.replace("</i>", "*")
+        # Escape some markdown. No idea what it's for, or why it doesn't effect EVERY instance, but this is invisible
+        effect = effect.replace("]:", "]\:")
         effect = self.a_to_reddit_link(effect)
         return effect
 
     def format_card(self, card_info):
         if card_info is not None:
-            #print(card_info)
-
             effect = None
             if 'Effect' in card_info:
                 effect = self.format_effect(card_info['Effect'])
@@ -49,12 +54,14 @@ class CardFetcher:
             if 'Shield' in card_info:
                 shield = " / Shield " + card_info['Shield']
 
+            url = self.escape_url(card_info['Url'])
+
             name = "[" + card_info['Name'] + "](" + card_info['Img'] + ")"
-            wikia = "[wikia](" + card_info['Url'] + ")"
+            wikia = "- [wikia](" + url + ")"
             unit_type = card_info['Unit Type']
             if unit_type == "Trigger Unit":
                 unit_type = unit_type + " (" + card_info['Trigger effect'] + ")"
-            # We just want "Grade x", not the skill (can be derived by reader from grade)
+            # We just want "Grade x", not the skill (can be derived from grade)
             grade = card_info['Grade / Skill'][:7]
 
             card_text = (name + " " + wikia + "\n\n" +
