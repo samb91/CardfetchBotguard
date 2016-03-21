@@ -45,6 +45,10 @@ class CardFetcher:
             if 'Effect' in card_info:
                 effect = self.format_effect(card_info['Effect'])
 
+            shield = ""
+            if 'Shield' in card_info:
+                shield = " / Shield " + card_info['Shield']
+
             name = "[" + card_info['Name'] + "](" + card_info['Img'] + ")"
             wikia = "[wikia](" + card_info['Url'] + ")"
             unit_type = card_info['Unit Type']
@@ -55,7 +59,7 @@ class CardFetcher:
 
             card_text = (name + " " + wikia + "\n\n" +
                          grade + " / " + unit_type + "\n\n" +
-                         "Power " + card_info['Power'] + " / Shield " + card_info['Shield'] + "\n\n" +
+                         "Power " + card_info['Power'] + shield + "\n\n" +
                          card_info['Clan'] + " / " + card_info['Race']
                          )
 
