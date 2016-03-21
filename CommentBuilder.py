@@ -5,8 +5,7 @@ import re
 class CommentBuilder:
     def __init__(self):
         self.bracket_pattern = re.compile("\[\[([^\[\]]*)\]\]")
-        self.url_pattern = \
-            re.compile("(?:http[s]?://)?(?:www.)?((?<!\w)cardfight.wikia.com/wiki/[^/\s\(\)]+(?:\([^/\s\(\)]+\))?)")
+        self.url_pattern = re.compile("(?<!\w)cardfight.wikia.com/wiki/[^/\s\(\)]+(?:\([^/\s\(\)]+\))?")
         self.card_fetcher = CardFetcher()
 
     def remove_duplicates(self, name_list):
