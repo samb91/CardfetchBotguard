@@ -1,6 +1,13 @@
 from CardFetcher import CardFetcher
 import re
 
+SIG_SEP = " ^^| "
+SIG_HOWTO = "^^Call ^^me ^^with ^^[[card ^^name]] ^^or ^^by ^^linking ^^to ^^a ^^card ^^on [^^the ^^wiki](http://cardfight.wikia.com)^^!"
+SIG_PM_SUB = "&subject=Problem+with+/u/CardfetchBotguard"
+SIG_PM_BODY = "&message=Please+include+a+link+to+the+comment!"
+SIG_PM = "[^^Did ^^I ^^get ^^something ^^wrong?](http://www.reddit.com/message/compose/?to=swabl" + SIG_PM_SUB + SIG_PM_BODY + ")"
+SIG_SRC = "[^^src](https://github.com/swabl/CardfetchBotguard)"
+SIGNATURE = SIG_HOWTO + SIG_SEP + SIG_PM + SIG_SEP + SIG_SRC
 
 class CommentBuilder:
     def __init__(self):
@@ -21,5 +28,6 @@ class CommentBuilder:
             reply = ""
             for card in found_patterns:
                 reply += self.card_fetcher.fetch_card(card) + "***\n\n"
+            reply += SIGNATURE
             return reply
         return None
