@@ -10,6 +10,7 @@ class CardFetcher:
         self.a_pattern = re.compile("(<a[^>]*>[^<]*</a>)")
         self.a_href_pattern = re.compile("(?<=<a href=\")[^\"]*")
         self.a_body_pattern = re.compile("(?<=>)[^<]*(?=</a>)")
+        self.font_tag_pattern = re.compile("</?font[^>]*>")
         self.wikia_handler = WikiaHandler()
 
     def get_card_by_url(self, url):
@@ -26,11 +27,6 @@ class CardFetcher:
             text = text.replace(m, reddit_link)
         return text
 
-    def escape_url(self, url):
-        url = url.replace("(", "\(")
-        url = url.replace(")", "\)")
-        return url
-
     def format_effect(self, effect):
         effect = effect.strip()
         effect = effect.replace("<br>", "\n\n")
@@ -41,8 +37,15 @@ class CardFetcher:
         effect = effect.replace("</i>", "*")
         # Escape some markdown. No idea what it's for, or why it doesn't effect EVERY instance, but this is invisible
         effect = effect.replace("]:", "]\:")
+        # Remove any font tags
+        effect = re.sub(self.font_tag_pattern, "", effect)
         effect = self.a_to_reddit_link(effect)
         return effect
+
+    def escape_url(self, url):
+        url = url.replace("(", "\(")
+        url = url.replace(")", "\)")
+        return url
 
     def format_card(self, card_info):
         if card_info is not None:
