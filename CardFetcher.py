@@ -53,15 +53,24 @@ class CardFetcher:
             if 'Effect' in card_info:
                 effect = self.format_effect(card_info['Effect'])
 
+            power = ""
+            if 'Power' in card_info:
+                power = "Power " + card_info['Power']
+
             shield = ""
             if 'Shield' in card_info:
-                shield = " / Shield " + card_info['Shield']
+                shield = "Shield " + card_info['Shield']
+
+            if power is not "" and shield is not "":
+                power_shield = power + " / " + shield
+            else:
+                power_shield = power + shield
 
             url = self.escape_url(card_info['Url'])
 
             name = "[" + card_info['Name'] + "](" + card_info['Img'] + ")"
             wikia = "- [wikia](" + url + ")"
-            unit_type = card_info['Unit Type']
+            unit_type = card_info['Card Type']
             if unit_type == "Trigger Unit":
                 unit_type = unit_type + " (" + card_info['Trigger effect'] + ")"
             # We just want "Grade x", not the skill (can be derived from grade)
@@ -69,7 +78,7 @@ class CardFetcher:
 
             card_text = (name + " " + wikia + "\n\n" +
                          grade + " / " + unit_type + "\n\n" +
-                         "Power " + card_info['Power'] + shield + "\n\n" +
+                         power_shield + "\n\n" +
                          card_info['Clan'] + " / " + card_info['Race']
                          )
 
